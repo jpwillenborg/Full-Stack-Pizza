@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
 import { createServer } from 'http'; // Native HTTP wrapper for WebSocket hooks
@@ -28,10 +29,10 @@ const io = new Server(httpServer, {
 
 // 🔌 BLUEHOST SQL POOL INTERFACE (Verified configuration parameters matrix)
 const db = mysql.createPool({
-  host: 'jpwillenborg.com',               // Your Bluehost Shared IP or active domain name
-  user: 'jpwillen_jpwillenborg',         // Your cPanel Database Username
-  password: 'Pass8417WORD~!@',  // Your cPanel Database Password
-  database: 'jpwillen_pizza_db',   // Your cPanel Database Name
+  host: process.env.DB_HOST,               
+  user: process.env.DB_USER,         
+  password: process.env.DB_PASSWORD,  
+  database: process.env.DB_DATABASE,   
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0
