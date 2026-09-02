@@ -62,14 +62,17 @@ async function initializeDatabaseSchema() {
 }
 initializeDatabaseSchema();
 
+// 📍 INVENTORY SYNC: Updated topping categories, short codes, and validation price matrix weights
 const DATASTORE_MENU = {
-  basePrices: { small: 8.00, medium: 11.00, large: 14.00 },
+  basePrices: { small: 6.50, medium: 8.00, large: 10.50 },
   toppings: [
-    { id: 'pepperoni', name: 'Pepperoni', price: 1.50, category: 'meat', code: 'PEP' },
-    { id: 'mushrooms', name: 'Mushrooms', price: 1.00, category: 'veggie', code: 'MSH' },
-    { id: 'onions', name: 'Onions', price: 0.75, category: 'veggie', code: 'ONN' },
-    { id: 'peppers', name: 'Green Peppers', price: 0.75, category: 'veggie', code: 'GPR' },
-    { id: 'extra_cheese', name: 'Extra Mozzarella', price: 1.25, category: 'cheese', code: 'CHZ' }
+    { id: 'pepperoni', name: 'Pepperoni', price: 1.00, category: 'meat', code: 'PEP' },
+    { id: 'sausage', name: 'Sausage', price: 1.00, category: 'meat', code: 'SSG' },
+    { id: 'bacon', name: 'Bacon', price: 1.50, category: 'meat', code: 'BCN' },
+    { id: 'red_peppers', name: 'Red Peppers', price: 0.75, category: 'veggie', code: 'PEP' },
+    { id: 'pineapple', name: 'Pineapple', price: 0.75, category: 'veggie', code: 'PIN' },
+    { id: 'onions', name: 'Onions', price: 0.50, category: 'veggie', code: 'ONN' },
+    { id: 'extra_cheese', name: 'Extra Cheese', price: 1.00, category: 'cheese', code: 'CHS' }
   ]
 };
 
