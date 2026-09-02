@@ -178,7 +178,7 @@ export default function App() {
               </div>
               <div className="form-card" style={{ flex: '1 1 180px', margin: 0, padding: '1.25rem', borderLeft: '4px solid #ef4444', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
                 {/* 📍 UPDATED TEXT LABELS */}
-                <span style={{ fontSize: '0.8rem', fontWeight: '700', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px' }}>⏳ Active Orders</span>
+                <span style={{ fontSize: '0.8rem', fontWeight: '700', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px' }}>⏳ Orders in Progress</span>
                 <strong style={{ fontSize: '1.85rem', color: '#ef4444', letterSpacing: '-0.5px' }}>{activeOrdersCount}</strong>
               </div>
               <div className="form-card" style={{ flex: '1 1 180px', margin: 0, padding: '1.25rem', borderLeft: '4px solid #0f172a', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
@@ -198,7 +198,7 @@ export default function App() {
                 <div className="form-card" style={{ margin: 0, width: '100%' }}>
                   
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', gap: '1rem', flexWrap: 'wrap' }}>
-                    <h3 style={{ margin: 0 }}>📁 Historical Receipt Logs Archive</h3>
+                    <h3 style={{ margin: 0 }}>📁 Order History</h3>
                     {orderHistory.length > 0 && (
                       <button
                         onClick={() => {
@@ -233,7 +233,7 @@ export default function App() {
                                 <select
                                   value={receipt.status}
                                   onChange={(e) => {
-                                    fetch('https://onrender.com', {
+                                    fetch('https://full-stack-pizza.onrender.com/api/orders/status', {
                                       method: 'PUT',
                                       headers: { 'Content-Type': 'application/json' },
                                       body: JSON.stringify({ id: receipt.id, status: e.target.value })
@@ -286,38 +286,46 @@ export default function App() {
           <div className="responsive-column" style={{ flex: '1 1 320px', minWidth: '280px' }}>
             <h3 style={{ margin: '0 0 1.25rem 0' }}>1. Build Your Pizza</h3>
             
-            <div className="form-card">
-              <h4>Select Base Size</h4>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem' }}>
-                {Object.keys(menu.basePrices).map((s) => {
-                  const isSelected = size === s;
-                  return (
-                    <label 
-                      key={s} 
-                      className="selection-label" 
-                      onClick={() => setSize(s)} 
-                      style={{ 
-                        flex: '1 1 130px', 
-                        justifyContent: 'center', 
-                        // 📍 STABLE TEXT BUTTONS: No radio dots; borders stay 1px to stop size shifting loops
-                        background: isSelected ? '#df3337' : '#fef2f2', 
-                        color: isSelected ? '#ffffff' : '#df3337',
-                        border: isSelected ? '1px solid #df3337' : '1px solid #fca5a5', 
-                        outline: 'none',
-                        cursor: 'pointer',
-                        padding: '0.85rem 1rem',
-                        boxSizing: 'border-box',
-                        transition: 'all 0.15s ease'
-                      }}
-                    >
-                      <span style={{ textTransform: 'capitalize', fontWeight: isSelected ? '800' : '600', letterSpacing: '0.25px' }}>
-                        {s}
-                      </span> 
-                    </label>
-                  );
-                })}
-              </div>
-            </div>
+            {/* 📍 OPTIONAL PREVIEW ENHANCEMENT: Injects basePrices dynamically inside Part 5 */}
+<div className="form-card">
+  <h4>Select Base Size</h4>
+  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem' }}>
+    {Object.keys(menu.basePrices).map((s) => {
+      const isSelected = size === s;
+      const basePrice = menu.basePrices[s]; // Pulls the raw numerical value from your database state
+      
+      return (
+        <label 
+          key={s} 
+          className="selection-label" 
+          onClick={() => setSize(s)} 
+          style={{ 
+            flex: '1 1 130px', 
+            justifyContent: 'center', 
+            flexDirection: 'column', // Stacks the size name and price neatly vertically
+            gap: '0.25rem',
+            background: isSelected ? '#df3337' : '#fef2f2', 
+            color: isSelected ? '#ffffff' : '#df3337',
+            border: isSelected ? '1px solid #df3337' : '1px solid #fca5a5', 
+            outline: 'none',
+            cursor: 'pointer',
+            padding: '0.65rem 1rem',
+            boxSizing: 'border-box',
+            transition: 'all 0.15s ease',
+            textAlign: 'center'
+          }}
+        >
+          <span style={{ textTransform: 'capitalize', fontWeight: isSelected ? '800' : '600', fontSize: '1rem' }}>
+            {s}
+          </span>
+          <span style={{ fontSize: '0.8rem', fontWeight: '500', opacity: isSelected ? 0.9 : 0.75 }}>
+            (${basePrice.toFixed(2)}) {/* 🍕 Displays ($8.00), ($11.00), etc. */}
+          </span>
+        </label>
+      );
+    })}
+  </div>
+</div>
 
             <div className="form-card">
               <h4>Select Ingredients</h4>
@@ -356,7 +364,7 @@ export default function App() {
             <h3 style={{ margin: '0 0 1.25rem 0' }}>2. Your Cart</h3>
             {cart.length === 0 ? (
               <div style={{ textAlign: 'center', padding: '3rem 1rem', border: '2px dashed #e2e8f0', borderRadius: '12px', background: '#fff' }}>
-                <p style={{ color: '#64748b', margin: 0, fontStyle: 'italic' }}>Your basket is completely empty. Build a configuration to begin.</p>
+                <p style={{ color: '#64748b', margin: 0, fontStyle: 'italic' }}>Your cart is empty. Build a pizza and add it to your cart to begin.</p>
               </div>
             ) : (
               <div>
