@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { io } from 'socket.io-client';
 import './index.css';
 
-// Open a persistent WebSocket tunnel connection outside the component lifecycle loop
+// 📍 PRODUCTION TUNNEL TUNING: Establishes a persistent live connection channel with Render
 const socket = io('https://onrender.com');
 
 export default function App() {
@@ -26,7 +26,7 @@ export default function App() {
 
   // 📡 HOOK 1: Initial Menu REST Handshake (Fires once on website boot)
   useEffect(() => {
-    fetch('http://localhost:5000/api/menu')
+    fetch('https://onrender.com/api/menu')
       .then(res => res.json())
       .then(data => { 
         setMenu(data); 
@@ -79,6 +79,7 @@ export default function App() {
 
     setOrderStatus('Received'); 
 
+    // 📍 PRODUCTION ENDPOINT: Outbound payload targeting your cloud web service
     fetch('https://onrender.com', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -99,7 +100,8 @@ export default function App() {
   };
 
   const handleAdminUpdate = (newStatus) => {
-    fetch('https://onrender.com', {
+    // 📍 PRODUCTION ENDPOINT: Status modification call to your cloud web service
+    fetch('https://onrender.com/status', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ status: newStatus })
@@ -183,7 +185,7 @@ export default function App() {
                   <button
                     onClick={() => {
                       if (confirm("Are you certain you want to permanently erase all archived checkout data logs?")) {
-                        fetch('http://localhost:5000/api/orders/history', { method: 'DELETE' })
+                        fetch('https://onrender.com', { method: 'DELETE' })
                           .catch(err => console.error("Archive purge command dropped", err));
                       }
                     }}
