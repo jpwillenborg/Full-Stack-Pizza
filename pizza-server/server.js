@@ -20,8 +20,8 @@ const io = new Server(httpServer, {
     // 📍 PRODUCTION FIX: Allow connection handshakes from both your local tester and live site
     origin: [
       "http://localhost:5173", 
-      "https://jpwillenborg.com/projects/pizza",       // 👈 Put your main Bluehost domain link here!
-      "https://www.jpwillenborg.com/projects/pizza"    // 👈 Include the www version just in case
+      "https://jpwillenborg.com",       // 👈 Put your main Bluehost domain link here!
+      "https://www.jpwillenborg.com"    // 👈 Include the www version just in case
     ], 
     methods: ["GET", "POST", "PUT", "DELETE"]
   }
