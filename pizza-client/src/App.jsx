@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { io } from 'socket.io-client';
 import './index.css';
 
-// 📍 TARGET TUNNEL CONNECTION: Direct WebSocket pipeline pointing to your active Render URL
-const socket = io('https://onrender.com');
+// 📍 TUNNEL TUNING: Direct WebSocket channel pointing to your active cloud server
+const socket = io('https://full-stack-pizza.onrender.com');
 
 export default function App() {
   // --- DATABASE DATA HOOKS (API FETCH STORAGE BUCKETS) ---
@@ -26,7 +26,7 @@ export default function App() {
 
   // 📡 HOOK 1: Initial Menu REST Handshake (Fires once on website boot)
   useEffect(() => {
-    fetch('https://onrender.com/api/menu')
+    fetch('https://full-stack-pizza.onrender.com/api/menu')
       .then(res => res.json())
       .then(data => { 
         setMenu(data); 
@@ -35,19 +35,19 @@ export default function App() {
       .catch(err => console.error("Critical Error: API master menu data stream offline", err));
   }, []);
 
-  // 📡 HOOK 2: Low-Latency Event-Driven WebSocket Pipelines
+  // 📡 HOOK 2: Event-Driven WebSocket Pipelines
   useEffect(() => {
-    // Catch immediate dispatch status updates pushed from the Express cluster
+    // Catch immediate status dispatch modifications from your Node instance
     socket.on('order_status_changed', (data) => {
       setOrderStatus(data.status);
     });
 
-    // Synchronize full administrative archive streams dynamically from memory log files
+    // Synchronize full relational log arrays from SQL datasets
     socket.on('history_updated', (historyLogs) => {
       setOrderHistory(historyLogs);
     });
 
-    // Clean up subscriber registries safely upon component unmounting lifecycles
+    // Clean up connections upon structural components unmounting
     return () => {
       socket.off('order_status_changed');
       socket.off('history_updated');
@@ -71,7 +71,6 @@ export default function App() {
   };
 
   const handleCheckout = () => {
-    // Client-side structural form field validation
     if (!customerInfo.name.trim() || !customerInfo.phone.trim() || !customerInfo.address.trim()) {
       alert("Please populate all shipping and identity fields before checkout transmission.");
       return;
@@ -80,7 +79,7 @@ export default function App() {
     setOrderStatus('Received'); 
 
     // 📍 PRODUCTION ENDPOINT: Correctly routes payloads with /api/orders
-    fetch('https://onrender.com', {
+    fetch('https://full-stack-pizza.onrender.com/api/orders', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ 
@@ -100,7 +99,8 @@ export default function App() {
   };
 
   const handleAdminUpdate = (newStatus) => {
-    fetch('https://onrender.com/status', {
+    // 📍 PRODUCTION ENDPOINT: Status modification call to your cloud web service
+    fetch('https://full-stack-pizza.onrender.com/api/orders/status', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ status: newStatus })
@@ -172,12 +172,12 @@ export default function App() {
             {/* 📊 REAL-TIME METRICS DISPLAY BANNER */}
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', width: '100%', boxSizing: 'border-box' }}>
               <div className="form-card" style={{ flex: '1 1 180px', margin: 0, padding: '1.25rem', borderLeft: '4px solid #16a34a', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                {/* 📍 REVISED LABEL COPY BLOCK */}
+                {/* 📍 UPDATED TEXT LABELS */}
                 <span style={{ fontSize: '0.8rem', fontWeight: '700', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px' }}>📈 Total Earnings</span>
                 <strong style={{ fontSize: '1.85rem', color: '#16a34a', letterSpacing: '-0.5px' }}>${lifetimeRevenue.toFixed(2)}</strong>
               </div>
               <div className="form-card" style={{ flex: '1 1 180px', margin: 0, padding: '1.25rem', borderLeft: '4px solid #ef4444', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                {/* 📍 REVISED LABEL COPY BLOCK */}
+                {/* 📍 UPDATED TEXT LABELS */}
                 <span style={{ fontSize: '0.8rem', fontWeight: '700', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px' }}>⏳ Active Orders</span>
                 <strong style={{ fontSize: '1.85rem', color: '#ef4444', letterSpacing: '-0.5px' }}>{activeOrdersCount}</strong>
               </div>
@@ -191,33 +191,19 @@ export default function App() {
               </div>
             </div>
             {/* MASTER KITCHEN CONTROLLER GRID */}
-            <div className="responsive-grid" style={{ display: 'flex', flexWrap: 'wrap', gap: '2rem' }}>
-              <div className="responsive-column" style={{ flex: '1 1 300px', minWidth: '280px' }}>
-                <div className="form-card" style={{ margin: 0 }}>
-                  <h3 style={{ marginTop: 0 }}>🛠️ Kitchen Controller Dispatch</h3>
-                  <p style={{ color: '#64748b', fontSize: '0.95rem', marginBottom: '1.5rem' }}>Update live customer tracker parameters instantly below.</p>
-                  <div style={{ background: '#f8fafc', padding: '1rem', borderRadius: '8px', marginBottom: '1.5rem', borderLeft: '4px solid #0f172a' }}>
-                    <strong>Active Broadcaster:</strong> <span style={{ color: '#ef4444', fontWeight: '800', marginLeft: '0.5rem' }}>{orderStatus}</span>
-                  </div>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                    {['Received', 'Preparing', 'Baking', 'Out for Delivery', 'Delivered'].map((stage) => (
-                      <button key={stage} onClick={() => handleAdminUpdate(stage)} style={{ padding: '1rem', fontSize: '1rem', fontWeight: '700', cursor: 'pointer', textAlign: 'left', borderRadius: '8px', border: '1px solid #e2e8f0', backgroundColor: orderStatus === stage ? '#16a34a' : '#fff', color: orderStatus === stage ? '#fff' : '#0f172a', transition: 'all 0.15s ease' }}>
-                        {orderStatus === stage ? '● Active Step: ' : '○ Deploy Step: '} {stage}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              <div className="responsive-column" style={{ flex: '1 1 450px', minWidth: '280px' }}>
-                <div className="form-card" style={{ margin: 0 }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', gap: '1rem', flexWrap: 'wrap' }}>
+            <div className="responsive-grid" style={{ display: 'flex', flexDirection: 'column', gap: '2rem', width: '100%' }}>
+              
+              {/* 📍 EXPANDED FULL-WIDTH CONTAINER: Controller columns cleared cleanly */}
+              <div className="responsive-column" style={{ width: '100%', boxSizing: 'border-box' }}>
+                <div className="form-card" style={{ margin: 0, width: '100%' }}>
+                  
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', gap: '1rem', flexWrap: 'wrap' }}>
                     <h3 style={{ margin: 0 }}>📁 Historical Receipt Logs Archive</h3>
                     {orderHistory.length > 0 && (
                       <button
                         onClick={() => {
                           if (confirm("Are you certain you want to permanently erase all archived checkout data logs?")) {
-                            fetch('https://onrender.com', { method: 'DELETE' })
+                            fetch('https://full-stack-pizza.onrender.com/api/orders/history', { method: 'DELETE' })
                               .catch(err => console.error("Archive purge command dropped", err));
                           }
                         }}
@@ -233,15 +219,17 @@ export default function App() {
                   {orderHistory.length === 0 ? (
                     <p style={{ color: '#64748b', fontStyle: 'italic', fontSize: '0.95rem', margin: 0 }}>No historical transactions captured in datastore cache yet.</p>
                   ) : (
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', maxHeight: '420px', overflowY: 'auto', paddingRight: '0.25rem' }}>
+                    /* 📍 TILING CARDS RESPONSIVE GRID LAYOUT SYSTEM */
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', gap: '1.25rem', maxHeight: '500px', overflowY: 'auto', paddingRight: '0.25rem' }}>
                       {orderHistory.map((receipt) => (
                         <div key={receipt.id} style={{ border: '1px solid #e2e8f0', borderRadius: '12px', padding: '1.25rem', background: '#ffffff', display: 'flex', flexDirection: 'column', gap: '0.75rem', boxSizing: 'border-box' }}>
+                          
                           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem' }}>
                             <div>
                               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                                 <strong style={{ color: '#0f172a', fontSize: '1.1rem' }}>{receipt.id}</strong>
                                 
-                                {/* 📍 ID-BASED STATUS DROPDOWN: Update previous orders independently */}
+                                {/* 📍 ID-BASED LOOKUP ROUTING DROPDOWN SELECTORS */}
                                 <select
                                   value={receipt.status}
                                   onChange={(e) => {
@@ -285,6 +273,7 @@ export default function App() {
                   )}
                 </div>
               </div>
+
             </div>
           </div>
         );
@@ -310,7 +299,7 @@ export default function App() {
                       style={{ 
                         flex: '1 1 130px', 
                         justifyContent: 'center', 
-                        // 📍 TEXT ONLY SIZE CARD: Radio inputs removed completely; color states handle selection feedback
+                        // 📍 STABLE TEXT BUTTONS: No radio dots; borders stay 1px to stop size shifting loops
                         background: isSelected ? '#df3337' : '#fef2f2', 
                         color: isSelected ? '#ffffff' : '#df3337',
                         border: isSelected ? '1px solid #df3337' : '1px solid #fca5a5', 
@@ -354,6 +343,7 @@ export default function App() {
                 <span style={{ fontWeight: '600', color: '#334155' }}>Current Build Cost:</span>
                 <strong style={{ fontSize: '1.35rem', color: '#b91c1c' }}>${getPizzaPrice(size, selectedToppings).toFixed(2)}</strong>
               </div>
+              {/* 📍 CUSTOM COPY UPDATE */}
               <button className="btn-primary" onClick={() => { setCart([...cart, { id: Date.now(), size, toppings: [...selectedToppings], price: getPizzaPrice(size, selectedToppings) }]); setSelectedToppings([]); }}>
                 Add Pizza to Order
               </button>
@@ -362,6 +352,7 @@ export default function App() {
 
           {/* Active Order Cart Queue Column */}
           <div className="responsive-column cart-border-left" style={{ flex: '1 1 320px', minWidth: '280px' }}>
+            {/* 📍 CUSTOM COPY UPDATE */}
             <h3 style={{ margin: '0 0 1.25rem 0' }}>2. Your Cart</h3>
             {cart.length === 0 ? (
               <div style={{ textAlign: 'center', padding: '3rem 1rem', border: '2px dashed #e2e8f0', borderRadius: '12px', background: '#fff' }}>
@@ -374,6 +365,7 @@ export default function App() {
                     <div key={item.id} className="form-card" style={{ margin: 0, padding: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <div>
                         <span style={{ textTransform: 'capitalize', fontWeight: '700', fontSize: '1.05rem' }}>{item.size} Size Pizza</span>
+                        {/* 📍 CUSTOM COPY UPDATE */}
                         <div style={{ fontSize: '0.85rem', color: '#64748b', marginTop: '0.25rem' }}>
                           Toppings: {item.toppings.length === 0 ? 'None' : item.toppings.map(tId => menu.toppings.find(t => t.id === tId)?.code).join(', ')}
                         </div>
@@ -383,7 +375,7 @@ export default function App() {
                   ))}
                 </div>
 
-                {/* Customer Details Validation Form Element */}
+                {/* Customer Details Form Element */}
                 <div className="form-card" style={{ background: '#ffffff', padding: '1.25rem', marginBottom: '1.5rem' }}>
                   <h4 style={{ margin: '0 0 1rem 0', color: '#0f172a' }}>Delivery Information</h4>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
@@ -412,10 +404,12 @@ export default function App() {
                 </div>
 
                 <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', padding: '1.25rem', borderRadius: '12px' }}>
+                  {/* 📍 CUSTOM COPY UPDATE */}
                   <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '1.25rem', fontWeight: '800', marginBottom: '1.25rem', color: '#0f172a' }}>
                     <span>Order Total:</span>
                     <span>${cart.reduce((sum, i) => sum + i.price, 0).toFixed(2)}</span>
                   </div>
+                  {/* 📍 CUSTOM COPY UPDATE */}
                   <button className="btn-primary" onClick={handleCheckout}>
                     Place Order
                   </button>
