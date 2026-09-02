@@ -62,7 +62,7 @@ initializeDatabaseSchema();
 
 // 📍 INVENTORY SYNC: Updated 7-item menu categories, short codes, and validation pricing matrices
 const DATASTORE_MENU = {
-  basePrices: { small: 8.00, medium: 11.00, large: 14.00 },
+  basePrices: { small: 6.50, medium: 8.00, large: 10.50 },
   toppings: [
     { id: 'pepperoni', name: 'Pepperoni', price: 1.00, category: 'meat', code: 'PEP' },
     { id: 'sausage', name: 'Sausage', price: 1.00, category: 'meat', code: 'SSG' },
