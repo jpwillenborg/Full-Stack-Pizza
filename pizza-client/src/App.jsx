@@ -80,7 +80,7 @@ export default function App() {
     setOrderStatus('Received'); 
 
     // 📍 PRODUCTION ENDPOINT: Outbound payload targeting your cloud web service
-    fetch('https://full-stack-pizza.onrender.com', {
+    fetch('https://full-stack-pizza.onrender.com/api/orders', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ 
@@ -101,7 +101,7 @@ export default function App() {
 
   const handleAdminUpdate = (newStatus) => {
     // 📍 PRODUCTION ENDPOINT: Status modification call to your cloud web service
-    fetch('https://full-stack-pizza.onrender.com/status', {
+    fetch('https://full-stack-pizza.onrender.com/api/orders/status', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ status: newStatus })
@@ -185,7 +185,7 @@ export default function App() {
                   <button
                     onClick={() => {
                       if (confirm("Are you certain you want to permanently erase all archived checkout data logs?")) {
-                        fetch('https://full-stack-pizza.onrender.com', { method: 'DELETE' })
+                        fetch('https://full-stack-pizza.onrender.com/api/orders/history', { method: 'DELETE' })
                           .catch(err => console.error("Archive purge command dropped", err));
                       }
                     }}
