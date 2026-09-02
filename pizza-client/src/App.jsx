@@ -3,7 +3,7 @@ import { io } from 'socket.io-client';
 import './index.css';
 
 // Open a persistent WebSocket tunnel connection outside the component lifecycle loop
-const socket = io('http://localhost:5000');
+const socket = io('https://onrender.com');
 
 export default function App() {
   // --- DATABASE DATA HOOKS (API FETCH STORAGE BUCKETS) ---
@@ -79,7 +79,7 @@ export default function App() {
 
     setOrderStatus('Received'); 
 
-    fetch('http://localhost:5000/api/orders', {
+    fetch('https://onrender.com', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ 
@@ -99,7 +99,7 @@ export default function App() {
   };
 
   const handleAdminUpdate = (newStatus) => {
-    fetch('http://localhost:5000/api/orders/status', {
+    fetch('https://onrender.com', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ status: newStatus })
