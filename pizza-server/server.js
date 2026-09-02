@@ -17,7 +17,6 @@ app.use(express.json());
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {
-    // 📍 PRODUCTION FIX: Allow connection handshakes from both your local tester and live site
     origin: [
       "http://localhost:5173", 
       "https://jpwillenborg.com",       // 👈 Put your main Bluehost domain link here!
@@ -26,7 +25,6 @@ const io = new Server(httpServer, {
     methods: ["GET", "POST", "PUT", "DELETE"]
   }
 });
-
 
 // 🔌 BLUEHOST SQL POOL INTERFACE (Verified configuration parameters matrix)
 const db = mysql.createPool({
@@ -62,9 +60,9 @@ async function initializeDatabaseSchema() {
 }
 initializeDatabaseSchema();
 
-// 📍 INVENTORY SYNC: Updated topping categories, short codes, and validation price matrix weights
+// 📍 INVENTORY SYNC: Updated 7-item menu categories, short codes, and validation pricing matrices
 const DATASTORE_MENU = {
-  basePrices: { small: 6.50, medium: 8.00, large: 10.50 },
+  basePrices: { small: 8.00, medium: 11.00, large: 14.00 },
   toppings: [
     { id: 'pepperoni', name: 'Pepperoni', price: 1.00, category: 'meat', code: 'PEP' },
     { id: 'sausage', name: 'Sausage', price: 1.00, category: 'meat', code: 'SSG' },
@@ -78,7 +76,7 @@ const DATASTORE_MENU = {
 
 const STATUS_STAGES = ['Received', 'Preparing', 'Baking', 'Out for Delivery', 'Delivered'];
 
-// Helper helper function to transform SQL records row structures and stream over WebSockets
+// Helper function to transform SQL record rows and stream them globally over WebSockets
 async function broadcastUpdatedHistory() {
   try {
     const [rows] = await db.query('SELECT * FROM orders ORDER BY db_id DESC');
@@ -125,7 +123,7 @@ app.post('/api/orders', async (req, res) => {
   try {
     let grandTotal = 0;
     
-    // 🔒 SECURITY AUDIT: Independently calculate bills to block client adjustments
+    // 🔒 SECURITY AUDIT: Independently calculate bills on the server to block client code overrides
     const validatedItems = items.map((clientItem) => {
       const base = DATASTORE_MENU.basePrices[clientItem.size];
       let toppingsTotal = 0;
@@ -151,7 +149,7 @@ app.post('/api/orders', async (req, res) => {
 
     console.log(`🔒 Remote Data Block Logged: ${orderId} - Total Bill: $${grandTotal.toFixed(2)}`);
     
-    io.emit('order_status_changed', { status: 'Received' });
+    io.emit('order_status_changed', { id: orderId, status: 'Received' });
     await broadcastUpdatedHistory();
 
     res.status(201).json({ message: 'Authorized and securely logged to remote hosting database.' });
@@ -164,27 +162,41 @@ app.get('/api/orders/track', async (req, res) => {
   try {
     const [rows] = await db.query('SELECT status FROM orders ORDER BY db_id DESC LIMIT 1');
     if (rows.length === 0) return res.status(404).json({ status: 'No Active Orders' });
-    res.json({ status: rows[0].status });
+    res.json({ status: rows.status });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
+// 📍 REFACTORED ID-BASED STATUS LOOKUP ROUTE: Overwrites specific order rows independently
 app.put('/api/orders/status', async (req, res) => {
-  const { status } = req.body;
-  if (!STATUS_STAGES.includes(status)) return res.status(400).json({ message: 'Invalid status stage.' });
+  const { id, status } = req.body; 
+
+  if (!id) {
+    return res.status(400).json({ message: 'Missing target order ID parameter.' });
+  }
+  if (!STATUS_STAGES.includes(status)) {
+    return res.status(400).json({ message: 'Invalid status stage token submitted.' });
+  }
 
   try {
-    const [rows] = await db.query('SELECT order_id FROM orders ORDER BY db_id DESC LIMIT 1');
-    if (rows.length === 0) return res.status(404).json({ message: 'No orders found to mutate.' });
+    // 🔒 Parameterized Query: Targets the exact matching unique order record row
+    const [result] = await db.query(
+      'UPDATE orders SET status = ? WHERE order_id = ?', 
+      [status, id]
+    );
 
-    await db.query('UPDATE orders SET status = ? WHERE order_id = ?', [status, rows[0].order_id]);
-    console.log(`🛠️ State mutation committed: Latest order row updated to "${status}"`);
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: `No active transaction records found matching: ${id}` });
+    }
 
-    io.emit('order_status_changed', { status: status });
+    console.log(`🛠️ State mutation committed: Order row ${id} successfully shifted to "${status}"`);
+
+    // Broadcast individual status switches and complete historical syncing models across WebSockets
+    io.emit('order_status_changed', { id: id, status: status });
     await broadcastUpdatedHistory();
 
-    res.status(200).json({ message: 'Remote status row metrics overwritten.' });
+    res.status(200).json({ message: 'Remote database status row successfully updated.' });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -206,10 +218,10 @@ app.delete('/api/orders/history', async (req, res) => {
 
 // --- SOCKET CONNECTIONS INITIAL HANDSHAKES ---
 io.on('connection', async (socket) => {
-  console.log(`📡 WebSocket linked: ${socket.id}`);
+  console.log(`... WebSocket linked: ${socket.id}`);
   try {
     const [rows] = await db.query('SELECT status FROM orders ORDER BY db_id DESC LIMIT 1');
-    if (rows.length > 0) socket.emit('order_status_changed', { status: rows[0].status });
+    if (rows.length > 0) socket.emit('order_status_changed', { status: rows.status });
     
     const [allRows] = await db.query('SELECT * FROM orders ORDER BY db_id DESC');
     const history = allRows.map(row => ({
@@ -224,7 +236,7 @@ io.on('connection', async (socket) => {
   }
 
   socket.on('disconnect', () => {
-    console.log(`🔌 Client disconnected: ${socket.id}`);
+    console.log(`... Client disconnected: ${socket.id}`);
   });
 });
 

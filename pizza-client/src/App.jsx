@@ -3,7 +3,7 @@ import { io } from 'socket.io-client';
 import './index.css';
 
 // 📍 TARGET TUNNEL CONNECTION: Direct WebSocket pipeline pointing to your active Render URL
-const socket = io('https://full-stack-pizza.onrender.com');
+const socket = io('https://onrender.com');
 
 export default function App() {
   // --- DATABASE DATA HOOKS (API FETCH STORAGE BUCKETS) ---
@@ -26,7 +26,7 @@ export default function App() {
 
   // 📡 HOOK 1: Initial Menu REST Handshake (Fires once on website boot)
   useEffect(() => {
-    fetch('https://full-stack-pizza.onrender.com/api/menu')
+    fetch('https://onrender.com/api/menu')
       .then(res => res.json())
       .then(data => { 
         setMenu(data); 
@@ -71,6 +71,7 @@ export default function App() {
   };
 
   const handleCheckout = () => {
+    // Client-side structural form field validation
     if (!customerInfo.name.trim() || !customerInfo.phone.trim() || !customerInfo.address.trim()) {
       alert("Please populate all shipping and identity fields before checkout transmission.");
       return;
@@ -78,8 +79,8 @@ export default function App() {
 
     setOrderStatus('Received'); 
 
-    // 📍 PRODUCTION ENDPOINT: Securely posts checkout payloads across the API layer
-    fetch('https://full-stack-pizza.onrender.com/api/orders', {
+    // 📍 PRODUCTION ENDPOINT: Correctly routes payloads with /api/orders
+    fetch('https://onrender.com', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ 
@@ -92,14 +93,14 @@ export default function App() {
         setView('tracking'); 
         setIsTracking(true); 
         setCart([]); 
-        setCustomerInfo({ name: '', phone: '', address: '' }); 
+        setCustomerInfo({ name: '', phone: '', address: '' }); // Clear inputs on success
       } 
     })
     .catch(err => console.error("Checkout data transfer failure link down", err));
   };
 
   const handleAdminUpdate = (newStatus) => {
-    fetch('https://full-stack-pizza.onrender.com/api/orders/status', {
+    fetch('https://onrender.com/status', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ status: newStatus })
@@ -125,7 +126,7 @@ export default function App() {
           <button 
             onClick={() => setView(isTracking ? 'tracking' : 'dashboard')} 
             style={{ 
-              background: view === 'dashboard' || view === 'tracking' ? '#048659' : 'transparent', // 📍 GREEN HEX TOGGLE
+              background: view === 'dashboard' || view === 'tracking' ? '#048659' : 'transparent', // 📍 EMERALD GREEN ACCENT
               color: view === 'dashboard' || view === 'tracking' ? '#fff' : '#0f172a' 
             }}
           >
@@ -134,7 +135,7 @@ export default function App() {
           <button 
             onClick={() => setView('admin')} 
             style={{ 
-              background: view === 'admin' ? '#048659' : 'transparent', // 📍 GREEN HEX TOGGLE
+              background: view === 'admin' ? '#048659' : 'transparent', // 📍 EMERALD GREEN ACCENT
               color: view === 'admin' ? '#fff' : '#0f172a' 
             }}
           >
@@ -171,11 +172,13 @@ export default function App() {
             {/* 📊 REAL-TIME METRICS DISPLAY BANNER */}
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', width: '100%', boxSizing: 'border-box' }}>
               <div className="form-card" style={{ flex: '1 1 180px', margin: 0, padding: '1.25rem', borderLeft: '4px solid #16a34a', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                <span style={{ fontSize: '0.8rem', fontWeight: '700', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px' }}>📈 Total Gross Earnings</span>
+                {/* 📍 REVISED LABEL COPY BLOCK */}
+                <span style={{ fontSize: '0.8rem', fontWeight: '700', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px' }}>📈 Total Earnings</span>
                 <strong style={{ fontSize: '1.85rem', color: '#16a34a', letterSpacing: '-0.5px' }}>${lifetimeRevenue.toFixed(2)}</strong>
               </div>
               <div className="form-card" style={{ flex: '1 1 180px', margin: 0, padding: '1.25rem', borderLeft: '4px solid #ef4444', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                <span style={{ fontSize: '0.8rem', fontWeight: '700', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px' }}>⏳ Active In-Flight Orders</span>
+                {/* 📍 REVISED LABEL COPY BLOCK */}
+                <span style={{ fontSize: '0.8rem', fontWeight: '700', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px' }}>⏳ Active Orders</span>
                 <strong style={{ fontSize: '1.85rem', color: '#ef4444', letterSpacing: '-0.5px' }}>{activeOrdersCount}</strong>
               </div>
               <div className="form-card" style={{ flex: '1 1 180px', margin: 0, padding: '1.25rem', borderLeft: '4px solid #0f172a', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
@@ -214,7 +217,7 @@ export default function App() {
                       <button
                         onClick={() => {
                           if (confirm("Are you certain you want to permanently erase all archived checkout data logs?")) {
-                            fetch('https://full-stack-pizza.onrender.com/api/orders/history', { method: 'DELETE' })
+                            fetch('https://onrender.com', { method: 'DELETE' })
                               .catch(err => console.error("Archive purge command dropped", err));
                           }
                         }}
@@ -233,11 +236,29 @@ export default function App() {
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', maxHeight: '420px', overflowY: 'auto', paddingRight: '0.25rem' }}>
                       {orderHistory.map((receipt) => (
                         <div key={receipt.id} style={{ border: '1px solid #e2e8f0', borderRadius: '12px', padding: '1.25rem', background: '#ffffff', display: 'flex', flexDirection: 'column', gap: '0.75rem', boxSizing: 'border-box' }}>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem' }}>
                             <div>
                               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                                 <strong style={{ color: '#0f172a', fontSize: '1.1rem' }}>{receipt.id}</strong>
-                                <span style={{ fontSize: '0.75rem', padding: '2px 6px', borderRadius: '4px', background: receipt.status === 'Delivered' ? '#dcfce7' : '#fef9c3', color: receipt.status === 'Delivered' ? '#15803d' : '#a16207', fontWeight: 'bold' }}>{receipt.status}</span>
+                                
+                                {/* 📍 ID-BASED STATUS DROPDOWN: Update previous orders independently */}
+                                <select
+                                  value={receipt.status}
+                                  onChange={(e) => {
+                                    fetch('https://onrender.com', {
+                                      method: 'PUT',
+                                      headers: { 'Content-Type': 'application/json' },
+                                      body: JSON.stringify({ id: receipt.id, status: e.target.value })
+                                    }).catch(err => console.error("Historical status mutation drop", err));
+                                  }}
+                                  style={{ padding: '4px 8px', fontSize: '0.8rem', fontWeight: '700', fontFamily: 'Poppins, sans-serif', border: '1px solid #e2e8f0', borderRadius: '6px', background: receipt.status === 'Delivered' ? '#dcfce7' : '#fef9c3', color: receipt.status === 'Delivered' ? '#15803d' : '#a16207', cursor: 'pointer', outline: 'none' }}
+                                >
+                                  {['Received', 'Preparing', 'Baking', 'Out for Delivery', 'Delivered'].map(stage => (
+                                    <option key={stage} value={stage} style={{ background: '#fff', color: '#0f172a', fontWeight: 'normal' }}>
+                                      {stage}
+                                    </option>
+                                  ))}
+                                </select>
                               </div>
                               <span style={{ fontSize: '0.8rem', color: '#94a3b8' }}>Logged: {receipt.timestamp}</span>
                             </div>
@@ -285,17 +306,18 @@ export default function App() {
                     <label 
                       key={s} 
                       className="selection-label" 
-                      onClick={() => setSize(s)} // Handles selection changes smoothly without input radio bubbles
+                      onClick={() => setSize(s)} 
                       style={{ 
                         flex: '1 1 130px', 
                         justifyContent: 'center', 
-                        // 📍 TEXT ONLY SIZE CARD: Radio buttons dropped entirely; colors manage the toggle feedback loops
+                        // 📍 TEXT ONLY SIZE CARD: Radio inputs removed completely; color states handle selection feedback
                         background: isSelected ? '#df3337' : '#fef2f2', 
                         color: isSelected ? '#ffffff' : '#df3337',
-                        border: isSelected ? 'none' : '1px solid #fca5a5', 
+                        border: isSelected ? '1px solid #df3337' : '1px solid #fca5a5', 
                         outline: 'none',
                         cursor: 'pointer',
                         padding: '0.85rem 1rem',
+                        boxSizing: 'border-box',
                         transition: 'all 0.15s ease'
                       }}
                     >
@@ -332,7 +354,6 @@ export default function App() {
                 <span style={{ fontWeight: '600', color: '#334155' }}>Current Build Cost:</span>
                 <strong style={{ fontSize: '1.35rem', color: '#b91c1c' }}>${getPizzaPrice(size, selectedToppings).toFixed(2)}</strong>
               </div>
-              {/* 📍 REVISED LABEL COPY BLOCK */}
               <button className="btn-primary" onClick={() => { setCart([...cart, { id: Date.now(), size, toppings: [...selectedToppings], price: getPizzaPrice(size, selectedToppings) }]); setSelectedToppings([]); }}>
                 Add Pizza to Order
               </button>
@@ -341,7 +362,6 @@ export default function App() {
 
           {/* Active Order Cart Queue Column */}
           <div className="responsive-column cart-border-left" style={{ flex: '1 1 320px', minWidth: '280px' }}>
-            {/* 📍 REVISED LABEL COPY BLOCK */}
             <h3 style={{ margin: '0 0 1.25rem 0' }}>2. Your Cart</h3>
             {cart.length === 0 ? (
               <div style={{ textAlign: 'center', padding: '3rem 1rem', border: '2px dashed #e2e8f0', borderRadius: '12px', background: '#fff' }}>
@@ -354,7 +374,6 @@ export default function App() {
                     <div key={item.id} className="form-card" style={{ margin: 0, padding: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <div>
                         <span style={{ textTransform: 'capitalize', fontWeight: '700', fontSize: '1.05rem' }}>{item.size} Size Pizza</span>
-                        {/* 📍 REVISED LABEL COPY BLOCK */}
                         <div style={{ fontSize: '0.85rem', color: '#64748b', marginTop: '0.25rem' }}>
                           Toppings: {item.toppings.length === 0 ? 'None' : item.toppings.map(tId => menu.toppings.find(t => t.id === tId)?.code).join(', ')}
                         </div>
@@ -393,12 +412,10 @@ export default function App() {
                 </div>
 
                 <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', padding: '1.25rem', borderRadius: '12px' }}>
-                  {/* 📍 REVISED LABEL COPY BLOCK */}
                   <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '1.25rem', fontWeight: '800', marginBottom: '1.25rem', color: '#0f172a' }}>
                     <span>Order Total:</span>
                     <span>${cart.reduce((sum, i) => sum + i.price, 0).toFixed(2)}</span>
                   </div>
-                  {/* 📍 REVISED LABEL COPY BLOCK */}
                   <button className="btn-primary" onClick={handleCheckout}>
                     Place Order
                   </button>
