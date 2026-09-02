@@ -24,7 +24,7 @@ const io = new Server(httpServer, {
 
 // 🔌 BLUEHOST SQL POOL INTERFACE (Verified configuration parameters matrix)
 const db = mysql.createPool({
-  host: 'jpwillenborg',               // Your Bluehost Shared IP or active domain name
+  host: 'jpwillenborg.com',               // Your Bluehost Shared IP or active domain name
   user: 'jpwillen_jpwillenborg',         // Your cPanel Database Username
   password: 'Pass8417WORD~!@',  // Your cPanel Database Password
   database: 'jpwillen_pizza_db',   // Your cPanel Database Name
