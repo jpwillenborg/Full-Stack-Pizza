@@ -3,7 +3,7 @@ import { io } from 'socket.io-client';
 import './index.css';
 
 // 📍 PRODUCTION TUNNEL TUNING: Establishes a persistent live connection channel with Render
-const socket = io('https://onrender.com');
+const socket = io('https://full-stack-pizza.onrender.com');
 
 export default function App() {
   // --- DATABASE DATA HOOKS (API FETCH STORAGE BUCKETS) ---
@@ -26,7 +26,7 @@ export default function App() {
 
   // 📡 HOOK 1: Initial Menu REST Handshake (Fires once on website boot)
   useEffect(() => {
-    fetch('https://onrender.com/api/menu')
+    fetch('https://full-stack-pizza.onrender.com/api/menu')
       .then(res => res.json())
       .then(data => { 
         setMenu(data); 
@@ -80,7 +80,7 @@ export default function App() {
     setOrderStatus('Received'); 
 
     // 📍 PRODUCTION ENDPOINT: Outbound payload targeting your cloud web service
-    fetch('https://onrender.com', {
+    fetch('https://full-stack-pizza.onrender.com', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ 
@@ -101,7 +101,7 @@ export default function App() {
 
   const handleAdminUpdate = (newStatus) => {
     // 📍 PRODUCTION ENDPOINT: Status modification call to your cloud web service
-    fetch('https://onrender.com/status', {
+    fetch('https://full-stack-pizza.onrender.com/status', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ status: newStatus })
@@ -185,7 +185,7 @@ export default function App() {
                   <button
                     onClick={() => {
                       if (confirm("Are you certain you want to permanently erase all archived checkout data logs?")) {
-                        fetch('https://onrender.com', { method: 'DELETE' })
+                        fetch('https://full-stack-pizza.onrender.com', { method: 'DELETE' })
                           .catch(err => console.error("Archive purge command dropped", err));
                       }
                     }}
