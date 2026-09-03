@@ -156,7 +156,15 @@ app.post('/api/orders', async (req, res) => {
     });
 
     const orderId = `ORD-${Date.now().toString().slice(-6)}`;
-    const timestamp = new Date().toLocaleTimeString();
+    
+    // 📍 FIXED US CENTRAL TIME TIMESTAMP: Bypasses the server's default timezone clock completely
+    const timestamp = new Date().toLocaleTimeString('en-US', {
+      timeZone: 'America/Chicago', // 🌟 Explicit IANA key for US Central Time (Handles daylight savings automatically)
+      hour: 'numeric',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: true
+    });
 
     // Parameterized Query: Securely binds variables to your MySQL database pool rows
     const query = `

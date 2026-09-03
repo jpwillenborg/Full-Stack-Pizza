@@ -75,7 +75,7 @@ export default function App() {
     setOrderStatus('Received'); 
 
     // Sends the text inputs directly. If blank, our backend configuration handles the substitution safely.
-    fetch('https://onrender.com', {
+    fetch('https://full-stack-pizza.onrender.com/api/orders', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ 
@@ -93,7 +93,7 @@ export default function App() {
     })
     .catch(err => console.error("Checkout data transfer failure link down", err));
   };
-  
+
 
   // 📍 REPAIRED APEX DISPATCH HANDLER: Safely extracts index 0 with clean array bracket notation
   const handleAdminUpdate = (newStatus) => {
@@ -264,24 +264,28 @@ export default function App() {
             
             {/* 📊 REAL-TIME METRICS DISPLAY BANNER */}
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', width: '100%', boxSizing: 'border-box' }}>
-              <div className="form-card" style={{ flex: '1 1 180px', margin: 0, padding: '1.25rem', borderLeft: '4px solid #048659', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                {/* 📍 UPDATED TEXT LABELS */}
-                <span style={{ fontSize: '0.8rem', fontWeight: '700', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px' }}>📈 Total Earnings</span>
-                <strong style={{ fontSize: '1.85rem', color: '#048659', letterSpacing: '-0.5px' }}>${lifetimeRevenue.toFixed(2)}</strong>
-              </div>
               <div className="form-card" style={{ flex: '1 1 180px', margin: 0, padding: '1.25rem', borderLeft: '4px solid #df3337', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
                 {/* 📍 UPDATED TEXT LABELS */}
                 <span style={{ fontSize: '0.8rem', fontWeight: '700', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px' }}>⏳ Orders in Progress</span>
-                <strong style={{ fontSize: '1.85rem', color: '#df3337', letterSpacing: '-0.5px' }}>{activeOrdersCount}</strong>
+                <strong style={{ fontSize: '1.85rem', color: '#df3337', letterSpacing: '-0.5px' }}>{activeOrdersCount} {activeOrdersCount === 1 ? 'Order' : 'Orders'}</strong>
               </div>
-              <div className="form-card" style={{ flex: '1 1 180px', margin: 0, padding: '1.25rem', borderLeft: '4px solid #0f172a', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+              <div className="form-card" style={{ flex: '1 1 180px', margin: 0, padding: '1.25rem', borderLeft: '4px solid #df3337', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
                 <span style={{ fontSize: '0.8rem', fontWeight: '700', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px' }}>🍕 Cumulative Volume</span>
-                <strong style={{ fontSize: '1.85rem', color: '#0f172a', letterSpacing: '-0.5px' }}>{aggregatePizzas} {aggregatePizzas === 1 ? 'Pizza' : 'Pizzas'}</strong>
+                <strong style={{ fontSize: '1.85rem', color: '#df3337', letterSpacing: '-0.5px' }}>{aggregatePizzas} {aggregatePizzas === 1 ? 'Pizza' : 'Pizzas'}</strong>
               </div>
-              <div className="form-card" style={{ flex: '1 1 180px', margin: 0, padding: '1.25rem', borderLeft: '4px solid #2563eb', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+              <div className="form-card" style={{ flex: '1 1 180px', margin: 0, padding: '1.25rem', borderLeft: '4px solid #df3337', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
                 <span style={{ fontSize: '0.8rem', fontWeight: '700', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px' }}>📊 Avg. Ticket Value</span>
-                <strong style={{ fontSize: '1.85rem', color: '#2563eb', letterSpacing: '-0.5px' }}>${averageReceiptBill.toFixed(2)}</strong>
+                <strong style={{ fontSize: '1.85rem', color: '#df3337', letterSpacing: '-0.5px' }}>${averageReceiptBill.toFixed(2)}</strong>
               </div>
+              
+              <div className="form-card" style={{ flex: '1 1 180px', margin: 0, padding: '1.25rem', borderLeft: '4px solid #df3337', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                {/* 📍 UPDATED TEXT LABELS */}
+                <span style={{ fontSize: '0.8rem', fontWeight: '700', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px' }}>📈 Total Earnings</span>
+                <strong style={{ fontSize: '1.85rem', color: '#df3337', letterSpacing: '-0.5px' }}>${lifetimeRevenue.toFixed(2)}</strong>
+              </div>
+              
+              
+              
             </div>
                         {/* MASTER KITCHEN CONTROLLER GRID */}
             <div className="responsive-grid" style={{ display: 'flex', flexWrap: 'wrap', gap: '2rem', width: '100%', boxSizing: 'border-box', marginTop: '1rem' }}>
@@ -299,7 +303,7 @@ export default function App() {
                     <div className="form-card" style={{ margin: 0 }}>
                       <h3 style={{ marginTop: 0 }}>🛠️ Kitchen Dispatch</h3>
                       <p style={{ color: '#64748b', fontSize: '0.95rem', marginBottom: '1.5rem' }}>
-                        Broadcast live status parameters globally across real-time sockets.
+                        Broadcast live status parameters across real-time sockets.
                       </p>
                       <div style={{ background: '#f8fafc', padding: '1rem', borderRadius: '8px', marginBottom: '1.5rem', borderLeft: '4px solid #df3337' }}>
                         <strong>Active Broadcaster (Newest Order):</strong> 
