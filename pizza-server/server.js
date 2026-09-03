@@ -157,14 +157,25 @@ app.post('/api/orders', async (req, res) => {
 
     const orderId = `ORD-${Date.now().toString().slice(-6)}`;
     
-    // 📍 FIXED US CENTRAL TIME TIMESTAMP: Bypasses the server's default timezone clock completely
-    const timestamp = new Date().toLocaleTimeString('en-US', {
-      timeZone: 'America/Chicago', // 🌟 Explicit IANA key for US Central Time (Handles daylight savings automatically)
+    // 📍 GET CURRENT DATE (MM-DD-YYYY) IN US CENTRAL TIME
+    const datePart = new Date().toLocaleDateString('en-US', {
+      timeZone: 'America/Chicago',
+      month: '2-digit',
+      day: '2-digit',
+      year: 'numeric'
+    }).replace(/\//g, '-'); // 🌟 Converts slash marks (09/03/2026) cleanly to dashes (09-03-2026)
+
+    // 📍 GET CURRENT TIME IN US CENTRAL TIME
+    const timePart = new Date().toLocaleTimeString('en-US', {
+      timeZone: 'America/Chicago',
       hour: 'numeric',
       minute: '2-digit',
       second: '2-digit',
       hour12: true
     });
+
+    // Combined String Example: "09-03-2026 @ 1:46:12 PM"
+    const timestamp = `${datePart} @ ${timePart}`;
 
     // Parameterized Query: Securely binds variables to your MySQL database pool rows
     const query = `
