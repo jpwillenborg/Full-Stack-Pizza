@@ -306,7 +306,7 @@ export default function App() {
                         Broadcast live status parameters across real-time sockets.
                       </p>
                       <div style={{ background: '#f8fafc', padding: '1rem', borderRadius: '8px', marginBottom: '1.5rem', borderLeft: '4px solid #df3337' }}>
-                        <strong>Active Broadcaster (Newest Order):</strong> 
+                        <strong>Active Broadcaster (Newest):</strong> 
                         <span style={{ color: '#df3337', fontWeight: '800', marginLeft: '0.5rem' }}>
                           {latestOrderActiveStatus}
                         </span>
