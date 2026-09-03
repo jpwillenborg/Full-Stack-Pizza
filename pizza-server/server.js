@@ -1,4 +1,5 @@
 import 'dotenv/config';
+
 import express from 'express';
 import cors from 'cors';
 import { createServer } from 'http'; // Native HTTP wrapper for WebSocket hooks
@@ -8,7 +9,7 @@ import mysql from 'mysql2/promise'; // Bluehost MySQL database driver
 const app = express();
 
 // 📍 PRODUCTION PORT BINDING: Accepts dynamic hosting server ports or defaults to 5000 locally
-const PORT = process.env.PORT || 5000; 
+const PORT = process.env.PORT; 
 
 // --- PACKET ROUTING PIPELINE MIDDLEWARES ---
 app.use(cors());
