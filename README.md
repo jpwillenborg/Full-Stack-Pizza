@@ -9,8 +9,8 @@ The application uses parameterized queries, rigorous input regex filtering, and 
 Clone the repository:
 
 ```bash
-git clone https://github.com
-cd your-repo-name
+git clone https://github.com/jpwillenborg/Full-Stack-Pizza
+cd full-stack-pizza
 ```
 
 ### Backend
