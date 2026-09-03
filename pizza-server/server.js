@@ -157,13 +157,13 @@ app.post('/api/orders', async (req, res) => {
 
     const orderId = `ORD-${Date.now().toString().slice(-6)}`;
     
-    // 📍 GET CURRENT DATE (MM-DD-YY) IN US CENTRAL TIME
+    // 📍 GET CURRENT DATE (MM/DD/YY): Stripped the .replace line so native forward slashes render
     const datePart = new Date().toLocaleDateString('en-US', {
       timeZone: 'America/Chicago',
       month: '2-digit',
       day: '2-digit',
-      year: '2-digit' // 🌟 Changed from 'numeric' to '2-digit' to truncate the century numbers
-    }).replace(/\//g, '-'); 
+      year: '2-digit' 
+    }); 
 
     // GET CURRENT TIME IN US CENTRAL TIME
     const timePart = new Date().toLocaleTimeString('en-US', {
@@ -174,7 +174,7 @@ app.post('/api/orders', async (req, res) => {
       hour12: true
     });
 
-    // Combined String Result Example: "09-03-26 @ 1:49:12 PM"
+    // Combined String Result Example: "09/03/26 @ 1:55:12 PM"
     const timestamp = `${datePart} @ ${timePart}`;
 
     // Parameterized Query: Securely binds variables to your MySQL database pool rows
