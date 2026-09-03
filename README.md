@@ -3,7 +3,7 @@
 A high-performance, event-driven e-commerce platform featuring an interactive customizer portal for clients and a real-time analytics dashboard for operations. This hybrid system architecture pairs a static, highly optimized frontend canvas with a secure, decoupled cloud runtime environment backed by a persistent relational database.
 
 🔗 **Live Client Application:** [https://jpwillenborg.com/projects/pizza/](https://jpwillenborg.com/projects/pizza/)  
-🔗 **API Server Instance:** [https://full-stack-pizza.onrender.com](https://full-stack-pizza.onrender.com)
+🔗 **API Server Instance:** [https://full-stack-pizza.onrender.com/api/menu](https://full-stack-pizza.onrender.com/api/menu)
 
 ---
 

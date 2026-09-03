@@ -1,5 +1,5 @@
 /* 📍 GOOGLE FONTS IMPORT: Pulls Poppins geometric typography profiles */
-@import url('https://googleapis.com');
+/* @import url('https://googleapis.com'); */
 
 /* 📍 PLACE THIS AT THE VERY TOP OF YOUR SRC/INDEX.CSS FILE */
 html, body {
@@ -217,4 +217,23 @@ header {
     border-left: 1px solid #e2e8f0;
     padding-left: 2.5rem;
   }
+}
+
+/* ========================================================================= */
+/* 🎚️ CUSTOM SIZING OVERRIDES FOR INGREDIENT CHECKBOXES                      */
+/* ========================================================================= */
+
+/* Targets checkboxes nested directly inside your clickable card wrappers */
+.selection-label input[type="checkbox"] {
+  /* 📍 SCALING: Forces the browser graphics engine to enlarge the box layout cleanly */
+  transform: scale(1.35) !important; 
+  
+  /* Adds extra breathing room between the enlarged checkbox and short codes */
+  margin-right: 0.95rem !important; 
+  cursor: pointer !important;
+}
+
+/* Optional: Slight layout adjustment to keep the label vertically centered perfectly */
+.selection-label {
+  align-items: center !important;
 }
