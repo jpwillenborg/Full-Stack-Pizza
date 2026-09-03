@@ -391,21 +391,24 @@ export default function App() {
                       type="text" 
                       placeholder="Your Full Name"
                       value={customerInfo.name}
-                      onChange={(e) => setCustomerInfo({ ...customerInfo, name: e.target.value })}
+                      // 📍 FRONTEND STRIP: Block angle brackets instantly to prevent user tag inputs
+                      onChange={(e) => setCustomerInfo({ ...customerInfo, name: e.target.value.replace(/[<>]/g, '') })}
                       style={{ padding: '0.75rem', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '1rem', fontFamily: 'Poppins, sans-serif' }}
                     />
                     <input 
                       type="tel" 
                       placeholder="Phone Number"
                       value={customerInfo.phone}
-                      onChange={(e) => setCustomerInfo({ ...customerInfo, phone: e.target.value })}
+                      // 📍 FRONTEND STRIP: Enforces strict numerical configurations for phone field entries
+                      onChange={(e) => setCustomerInfo({ ...customerInfo, phone: e.target.value.replace(/[^0-9+\-\s()]/g, '') })}
                       style={{ padding: '0.75rem', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '1rem', fontFamily: 'Poppins, sans-serif' }}
                     />
                     <input 
                       type="text" 
                       placeholder="Delivery Address"
                       value={customerInfo.address}
-                      onChange={(e) => setCustomerInfo({ ...customerInfo, address: e.target.value })}
+                      // 📍 FRONTEND STRIP: Block angle brackets instantly to prevent user tag inputs
+                      onChange={(e) => setCustomerInfo({ ...customerInfo, address: e.target.value.replace(/[<>]/g, '') })}
                       style={{ padding: '0.75rem', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '1rem', fontFamily: 'Poppins, sans-serif' }}
                     />
                   </div>
