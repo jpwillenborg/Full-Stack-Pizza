@@ -123,25 +123,25 @@ app.post('/api/orders', async (req, res) => {
   if (!items || items.length === 0) return res.status(400).json({ message: 'Cart is empty.' });
 
   try {
-    // 🔒 INPUT SANITIZATION SHIELD: Strips out HTML script tags and harmful query characters
     const sanitizeInput = (str) => {
       if (typeof str !== 'string') return '';
       return str
-        .replace(/<[^>]*>/g, '') // ❌ Regex removes any HTML tags completely to prevent XSS
-        .replace(/['"`;\-]/g, '') // ❌ Strips raw quotation marks, semicolons, and comment marks
+        .replace(/<[^>]*>/g, '') // Strips HTML to prevent XSS
+        .replace(/['"`;\-]/g, '') // Strips raw quotation marks and semicolons
         .trim();
     };
 
-    const sanitizedCustomer = {
-      name: sanitizeInput(customer.name),
-      phone: sanitizeInput(customer.phone.replace(/[^0-9+\-\s()]/g, '')), // 📍 Phone strict regex filtering
-      address: sanitizeInput(customer.address)
-    };
+    // 🔒 INPUT DEFAULT SHIELD: Strips data, then evaluates if it should use generic fallbacks
+    const rawName = sanitizeInput(customer?.name);
+    const rawPhone = sanitizeInput(customer?.phone?.replace(/[^0-9+\-\s()]/g, ''));
+    const rawAddress = sanitizeInput(customer?.address);
 
-    // Client-side verification fallback check
-    if (!sanitizedCustomer.name || !sanitizedCustomer.phone || !sanitizedCustomer.address) {
-      return res.status(400).json({ message: 'Invalid or malicious characters submitted.' });
-    }
+    // 📍 THE FIX: If the field is empty after sanitization, populate it with generic placeholder strings
+    const sanitizedCustomer = {
+      name: rawName || 'Guest Customer',
+      phone: rawPhone || '000-000-0000',
+      address: rawAddress || 'Store Pick-up / No Address'
+    };
 
     let grandTotal = 0;
     const validatedItems = items.map((clientItem) => {
@@ -158,7 +158,7 @@ app.post('/api/orders', async (req, res) => {
     const orderId = `ORD-${Date.now().toString().slice(-6)}`;
     const timestamp = new Date().toLocaleTimeString();
 
-    // 🔒 PARAMETERIZED QUERY: Safely binds variables to prevent SQL injection logs
+    // Parameterized Query: Securely binds variables to your MySQL database pool rows
     const query = `
       INSERT INTO orders (order_id, customer_name, customer_phone, customer_address, total_bill, timestamp, items_json)
       VALUES (?, ?, ?, ?, ?, ?, ?)
@@ -168,7 +168,7 @@ app.post('/api/orders', async (req, res) => {
       grandTotal.toFixed(2), timestamp, JSON.stringify(validatedItems)
     ]);
 
-    console.log(`🔒 Secure Data Block Logged: ${orderId} - Total Bill: $${grandTotal.toFixed(2)}`);
+    console.log(`🔒 Secure Data Block Logged: ${orderId} - Fields defaulted if blank.`);
     
     io.emit('order_status_changed', { id: orderId, status: 'Received' });
     await broadcastUpdatedHistory();

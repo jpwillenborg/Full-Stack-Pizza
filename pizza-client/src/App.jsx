@@ -70,16 +70,12 @@ export default function App() {
     return base + toppingsPrice;
   };
 
+  // 📍 UPDATED FRONTEND CHECKOUT: Fields are now completely optional
   const handleCheckout = () => {
-    if (!customerInfo.name.trim() || !customerInfo.phone.trim() || !customerInfo.address.trim()) {
-      alert("Please populate all shipping and identity fields before checkout transmission.");
-      return;
-    }
-
     setOrderStatus('Received'); 
 
-    // 📍 PRODUCTION ENDPOINT: Correctly routes payloads with /api/orders
-    fetch('https://full-stack-pizza.onrender.com/api/orders', {
+    // Sends the text inputs directly. If blank, our backend configuration handles the substitution safely.
+    fetch('https://onrender.com', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ 
@@ -92,26 +88,77 @@ export default function App() {
         setView('tracking'); 
         setIsTracking(true); 
         setCart([]); 
-        setCustomerInfo({ name: '', phone: '', address: '' }); // Clear inputs on success
+        setCustomerInfo({ name: '', phone: '', address: '' }); // Reset text fields upon clear success
       } 
     })
     .catch(err => console.error("Checkout data transfer failure link down", err));
   };
+  
 
+  // 📍 REPAIRED APEX DISPATCH HANDLER: Safely extracts index 0 with clean array bracket notation
   const handleAdminUpdate = (newStatus) => {
-    // 📍 PRODUCTION ENDPOINT: Status modification call to your cloud web service
+    // Structural safety guard: Prevent network execution if the database logs are blank
+    if (!orderHistory || orderHistory.length === 0) {
+      alert("No active transaction records found inside database memory grids yet.");
+      return;
+    }
+
+    // 🔥 FIX: Added [0] brackets to explicitly point to the very newest ticket card at the top of your array list
+    const latestOrder = orderHistory[0];
+
+    // Verification check: Stop execution if the first array object is malformed
+    if (!latestOrder || !latestOrder.id) {
+      console.error("Critical tracking fault: Failed to extract a valid ID string from index 0.");
+      return;
+    }
+
+    // Pushes the exact key matching your backend app.put('/api/orders/status') endpoint route
     fetch('https://full-stack-pizza.onrender.com/api/orders/status', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ status: newStatus })
+      body: JSON.stringify({ 
+        id: latestOrder.id, 
+        status: newStatus 
+      })
     })
-    .catch(err => console.error("Admin broadcast mutation dropped", err));
+    .catch(err => console.error("Global admin broadcast mutation dropped", err));
   };
 
+
+
+
+  // 📍 FIXED INLINE OVERRIDE: Centers and scales loading elements dynamically based on screen bounds
   if (loading) {
+    const isMobile = window.innerWidth <= 480;
+
     return (
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '80vh' }}>
-        <h2 style={{ color: '#df3337' }}>🍕 Syncing Data Pipeline Node...</h2>
+      <div 
+        style={{ 
+          display: 'flex', 
+          justifyContent: 'center', 
+          alignItems: 'center', 
+          minHeight: '80vh',
+          width: '100%',
+          boxSizing: 'border-box',
+          // Adds custom horizontal padding to prevent text lines from clipping the mobile bezel edge walls
+          padding: isMobile ? '0 1.5rem' : '0' 
+        }}
+      >
+        <h2 
+          style={{ 
+            color: '#df3337',
+            textAlign: 'center', // 🌟 Guarantees text blocks align dead center on all form factors
+            margin: 0,
+            fontFamily: "'Poppins', sans-serif",
+            fontWeight: '700',
+            // 🌟 The Magic Line: Scales text down to a compact 1.25rem on smartphones, stays 1.85rem on desktops
+            fontSize: isMobile ? '1.25rem' : '1.85rem',
+            lineHeight: '1.4',
+            letterSpacing: '-0.25px'
+          }}
+        >
+          🍕 Syncing Data Pipeline Node...
+        </h2>
       </div>
     );
   }
@@ -143,20 +190,66 @@ export default function App() {
           </button>
         </div>
       </header>
-      {/* VIEW A: REAL-TIME TRACKING DISPATCH CONSOLE */}
-      {view === 'tracking' && (
-        <div style={{ padding: '3rem 1.5rem', background: '#fff', border: '1px solid #edf2f7', borderRadius: '16px', textAlign: 'center', maxWidth: '480px', margin: '3rem auto', boxShadow: '0 10px 30px rgba(15,23,42,0.04)' }}>
-          <h3 style={{ margin: '0 0 0.5rem 0' }}>📦 Order Progress</h3>
-          <p style={{ color: '#64748b', marginTop: 0 }}>Your receipt has been committed to database memory logs.</p>
-          <div style={{ background: '#fef2f2', padding: '1.75rem', borderRadius: '12px', margin: '2rem 0', border: '1px solid #fee2e2' }}>
-            <span style={{ fontSize: '0.85rem', color: '#ef4444', fontWeight: '800', letterSpacing: '1px', display: 'block', textTransform: 'uppercase' }}>Current Tracker State</span>
-            <strong style={{ fontSize: '2.25rem', color: '#b91c1c', display: 'block', marginTop: '0.5rem', letterSpacing: '-0.5px' }}>{orderStatus}</strong>
+
+
+
+            {/* VIEW A: REAL-TIME TRACKING DISPATCH CONSOLE */}
+      {view === 'tracking' && (() => {
+        // 📍 FIXED HOOK: Added [0] to correctly extract the live status string from your newest active database order card
+        const activeTrackingStatus = (orderHistory && orderHistory.length > 0)
+          ? orderHistory[0].status
+          : 'Received';
+
+        // Evaluates if the active database ticket has been completed
+        const isDelivered = activeTrackingStatus === 'Delivered';
+
+        return (
+          <div style={{ padding: '3rem 1.5rem', background: '#fff', border: '1px solid #edf2f7', borderRadius: '16px', textAlign: 'center', maxWidth: '480px', margin: '3rem auto', boxShadow: '0 10px 30px rgba(15,23,42,0.04)' }}>
+            <h3 style={{ margin: '0 0 0.5rem 0' }}>📦 Order Progress</h3>
+            <p style={{ color: '#64748b', marginTop: 0 }}>Your receipt has been committed to database memory logs.</p>
+            
+            {/* DYNAMIC THEME ENGINE: Conditionally toggles background colors and border outlines */}
+            <div style={{ 
+              background: isDelivered ? '#dcfce7' : '#fef2f2', 
+              padding: '1.75rem', 
+              borderRadius: '12px', 
+              margin: '2rem 0', 
+              border: isDelivered ? '1px solid #bbf7d0' : '1px solid #fee2e2',
+              transition: 'all 0.2s ease'
+            }}>
+              <span style={{ 
+                fontSize: '0.85rem', 
+                color: isDelivered ? '#16a34a' : '#df3337', 
+                fontWeight: '800', 
+                letterSpacing: '1px', 
+                display: 'block', 
+                textTransform: 'uppercase' 
+              }}>
+                Current Tracker State
+              </span>
+              
+              {/* 📍 SUCCESS RESTORED: This will now cleanly print "Received", "Baking", or "Delivered" */}
+              <strong style={{ 
+                fontSize: '2.25rem', 
+                color: isDelivered ? '#15803d' : '#b91c1c', 
+                display: 'block', 
+                marginTop: '0.5rem', 
+                letterSpacing: '-0.5px',
+                textTransform: 'capitalize'
+              }}>
+                {activeTrackingStatus}
+              </strong>
+            </div>
+            
+            <button className="btn-primary" onClick={() => { setView('dashboard'); setIsTracking(false); }}>
+              Return & Reset Dashboard
+            </button>
           </div>
-          <button className="btn-primary" onClick={() => { setView('dashboard'); setIsTracking(false); }}>
-            Return & Reset Dashboard
-          </button>
-        </div>
-      )}
+        );
+      })()}
+
+
+
 
       {/* VIEW B: KITCHEN ADMINISTRATION PANEL VIEW WITH LIVE METRICS DASHBOARD */}
       {view === 'admin' && (() => {
@@ -171,15 +264,15 @@ export default function App() {
             
             {/* 📊 REAL-TIME METRICS DISPLAY BANNER */}
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', width: '100%', boxSizing: 'border-box' }}>
-              <div className="form-card" style={{ flex: '1 1 180px', margin: 0, padding: '1.25rem', borderLeft: '4px solid #16a34a', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+              <div className="form-card" style={{ flex: '1 1 180px', margin: 0, padding: '1.25rem', borderLeft: '4px solid #048659', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
                 {/* 📍 UPDATED TEXT LABELS */}
                 <span style={{ fontSize: '0.8rem', fontWeight: '700', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px' }}>📈 Total Earnings</span>
-                <strong style={{ fontSize: '1.85rem', color: '#16a34a', letterSpacing: '-0.5px' }}>${lifetimeRevenue.toFixed(2)}</strong>
+                <strong style={{ fontSize: '1.85rem', color: '#048659', letterSpacing: '-0.5px' }}>${lifetimeRevenue.toFixed(2)}</strong>
               </div>
-              <div className="form-card" style={{ flex: '1 1 180px', margin: 0, padding: '1.25rem', borderLeft: '4px solid #ef4444', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+              <div className="form-card" style={{ flex: '1 1 180px', margin: 0, padding: '1.25rem', borderLeft: '4px solid #df3337', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
                 {/* 📍 UPDATED TEXT LABELS */}
                 <span style={{ fontSize: '0.8rem', fontWeight: '700', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px' }}>⏳ Orders in Progress</span>
-                <strong style={{ fontSize: '1.85rem', color: '#ef4444', letterSpacing: '-0.5px' }}>{activeOrdersCount}</strong>
+                <strong style={{ fontSize: '1.85rem', color: '#df3337', letterSpacing: '-0.5px' }}>{activeOrdersCount}</strong>
               </div>
               <div className="form-card" style={{ flex: '1 1 180px', margin: 0, padding: '1.25rem', borderLeft: '4px solid #0f172a', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
                 <span style={{ fontSize: '0.8rem', fontWeight: '700', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px' }}>🍕 Cumulative Volume</span>
@@ -190,15 +283,95 @@ export default function App() {
                 <strong style={{ fontSize: '1.85rem', color: '#2563eb', letterSpacing: '-0.5px' }}>${averageReceiptBill.toFixed(2)}</strong>
               </div>
             </div>
-            {/* MASTER KITCHEN CONTROLLER GRID */}
-            <div className="responsive-grid" style={{ display: 'flex', flexDirection: 'column', gap: '2rem', width: '100%' }}>
+                        {/* MASTER KITCHEN CONTROLLER GRID */}
+            <div className="responsive-grid" style={{ display: 'flex', flexWrap: 'wrap', gap: '2rem', width: '100%', boxSizing: 'border-box', marginTop: '1rem' }}>
               
-              {/* 📍 EXPANDED FULL-WIDTH CONTAINER: Controller columns cleared cleanly */}
-              <div className="responsive-column" style={{ width: '100%', boxSizing: 'border-box' }}>
-                <div className="form-card" style={{ margin: 0, width: '100%' }}>
+            
+                          {/* COLUMN 1: LEFT-HAND KITCHEN DISPATCH BOARD */}
+              {(() => {
+                // 📍 FIXED HOOK: Explicitly looks up index 0 of your array logs to read the live status string
+                const latestOrderActiveStatus = (orderHistory && orderHistory.length > 0) 
+                  ? orderHistory[0].status 
+                  : 'Received';
+
+                return (
+                  <div className="responsive-column" style={{ flex: '1 1 300px', minWidth: '280px' }}>
+                    <div className="form-card" style={{ margin: 0 }}>
+                      <h3 style={{ marginTop: 0 }}>🛠️ Kitchen Dispatch</h3>
+                      <p style={{ color: '#64748b', fontSize: '0.95rem', marginBottom: '1.5rem' }}>
+                        Broadcast live status parameters globally across real-time sockets.
+                      </p>
+                      <div style={{ background: '#f8fafc', padding: '1rem', borderRadius: '8px', marginBottom: '1.5rem', borderLeft: '4px solid #df3337' }}>
+                        <strong>Active Broadcaster (Newest Order):</strong> 
+                        <span style={{ color: '#df3337', fontWeight: '800', marginLeft: '0.5rem' }}>
+                          {latestOrderActiveStatus}
+                        </span>
+                      </div>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                        {['Received', 'Preparing', 'Baking', 'Out for Delivery', 'Delivered'].map((stage) => {
+                          const isActive = latestOrderActiveStatus === stage;
+                          return (
+                            <button 
+                              key={stage} 
+                              onClick={() => handleAdminUpdate(stage)} 
+                              style={{ 
+                                padding: '1rem', 
+                                fontSize: '1rem', 
+                                fontWeight: '700', 
+                                cursor: 'pointer', 
+                                textAlign: 'left', 
+                                borderRadius: '8px', 
+                                border: '1px solid #e2e8f0', 
+                                // 📍 RESTORED LIGHTS: Safely highlights using the matching index string
+                                backgroundColor: isActive ? '#048659' : '#fff', 
+                                color: isActive ? '#fff' : '#0f172a', 
+                                transition: 'all 0.15s ease',
+                                display: 'flex',
+                                alignItems: 'center'
+                              }}
+                            >
+                              <span style={{ 
+                                fontSize: '1.7rem', 
+                                marginRight: '0.6rem', 
+                                lineHeight: '1',
+                                display: 'inline-block',
+                                transform: 'translateY(-1px)'
+                              }}>
+                                {isActive ? '●' : '○'}
+                              </span>
+                              
+                              <span>
+                                {isActive ? 'Active Step:' : 'Deploy Step:'} {stage}
+                              </span>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })()}
+
+
+
+              {/* COLUMN 2: RIGHT-HAND HISTORICAL RECEIPT LOGS ARCHIVE */}
+              <div className="responsive-column" style={{ flex: '1 2 480px', minWidth: '280px' }}>
+                <div className="form-card" style={{ margin: 0 }}>
                   
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', gap: '1rem', flexWrap: 'wrap' }}>
-                    <h3 style={{ margin: 0 }}>📁 Order History</h3>
+                  {/* 📍 FIXED INLINE OVERRIDE: Dynamically switches layout style based on mobile device dimensions */}
+                  <div 
+                    style={{ 
+                      display: 'flex', 
+                      // 🌟 The Magic Line: If the screen is mobile-sized, force column layout; otherwise, stay side-by-side row
+                      flexDirection: window.innerWidth <= 480 ? 'column' : 'row',
+                      justifyContent: 'space-between', 
+                      alignItems: window.innerWidth <= 480 ? 'flex-start' : 'center', 
+                      marginBottom: '1.25rem', 
+                      gap: '0.75rem', 
+                      flexWrap: 'wrap' 
+                    }}
+                  >
+                    <h3 style={{ margin: 0, whiteSpace: 'nowrap' }}>📁 Order History</h3>
                     {orderHistory.length > 0 && (
                       <button
                         onClick={() => {
@@ -207,7 +380,21 @@ export default function App() {
                               .catch(err => console.error("Archive purge command dropped", err));
                           }
                         }}
-                        style={{ padding: '0.45rem 0.85rem', fontSize: '0.85rem', fontWeight: '700', fontFamily: 'Poppins, sans-serif', color: '#ef4444', background: '#fef2f2', border: '1px solid #fee2e2', borderRadius: '6px', cursor: 'pointer', transition: 'all 0.15s ease', whiteSpace: 'nowrap' }}
+                        style={{ 
+                          padding: '0.45rem 0.85rem', 
+                          fontSize: '0.85rem', 
+                          fontWeight: '700', 
+                          fontFamily: 'Poppins, sans-serif', 
+                          color: '#ef4444', 
+                          background: '#fef2f2', 
+                          border: '1px solid #fee2e2', 
+                          borderRadius: '6px', 
+                          cursor: 'pointer', 
+                          transition: 'all 0.15s ease', 
+                          whiteSpace: 'nowrap',
+                          // 🌟 Ensures the button sits cleanly flush against the left wall on phones
+                          alignSelf: 'flex-start'
+                        }}
                         onMouseEnter={(e) => { e.target.style.background = '#fee2e2'; }}
                         onMouseLeave={(e) => { e.target.style.background = '#fef2f2'; }}
                       >
@@ -215,12 +402,10 @@ export default function App() {
                       </button>
                     )}
                   </div>
-
                   {orderHistory.length === 0 ? (
                     <p style={{ color: '#64748b', fontStyle: 'italic', fontSize: '0.95rem', margin: 0 }}>No historical transactions captured in datastore cache yet.</p>
                   ) : (
-                    /* 📍 TILING CARDS RESPONSIVE GRID LAYOUT SYSTEM */
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', gap: '1.25rem', maxHeight: '500px', overflowY: 'auto', paddingRight: '0.25rem' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', maxHeight: '500px', overflowY: 'auto', paddingRight: '0.25rem' }}>
                       {orderHistory.map((receipt) => (
                         <div key={receipt.id} style={{ border: '1px solid #e2e8f0', borderRadius: '12px', padding: '1.25rem', background: '#ffffff', display: 'flex', flexDirection: 'column', gap: '0.75rem', boxSizing: 'border-box' }}>
                           
@@ -229,7 +414,6 @@ export default function App() {
                               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                                 <strong style={{ color: '#0f172a', fontSize: '1.1rem' }}>{receipt.id}</strong>
                                 
-                                {/* 📍 ID-BASED LOOKUP ROUTING DROPDOWN SELECTORS */}
                                 <select
                                   value={receipt.status}
                                   onChange={(e) => {
@@ -278,6 +462,7 @@ export default function App() {
           </div>
         );
       })()}
+
       {/* VIEW C: E-COMMERCE CLIENT CONFIGURATION WORKSPACE */}
       {view === 'dashboard' && (
         <div className="responsive-grid" style={{ display: 'flex', flexWrap: 'wrap', gap: '2rem' }}>
@@ -330,19 +515,28 @@ export default function App() {
             <div className="form-card">
               <h4>Select Ingredients</h4>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                {menu.toppings.map((t) => {
-                  const isChecked = selectedToppings.includes(t.id);
-                  return (
-                    <label key={t.id} className="selection-label" style={{ justifyContent: 'space-between', background: isChecked ? '#fef2f2' : '#ffffff', borderColor: isChecked ? '#fca5a5' : '#e2e8f0' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                        <input type="checkbox" checked={isChecked} onChange={() => handleToppingToggle(t.id)} style={{ accentColor: '#df3337' }} /> 
-                        <strong style={{ color: '#df3337', fontSize: '0.85rem', marginRight: '0.25rem' }}>[{t.code}]</strong> 
-                        <span>{t.name}</span>
-                      </div>
-                      <span style={{ color: '#64748b', fontSize: '0.9rem', fontWeight: '600' }}>+${t.price.toFixed(2)}</span>
-                    </label>
-                  );
-                })}
+                {/* 📍 COMPONENT SHIELD AUDIT: Ensure the loop label inside App.jsx looks exactly like this */}
+{menu.toppings.map((t) => {
+  const isChecked = selectedToppings.includes(t.id);
+  return (
+    <label 
+      key={t.id} 
+      className="selection-label" 
+      // 🔥 Keep only conditional background and borders inline—remove custom heights/paddings here
+      style={{ 
+        background: isChecked ? '#fef2f2' : '#ffffff', 
+        borderColor: isChecked ? '#fca5a5' : '#e2e8f0' 
+      }}
+    >
+      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+        <input type="checkbox" checked={isChecked} onChange={() => handleToppingToggle(t.id)} style={{ accentColor: '#df3337' }} /> 
+        <strong style={{ color: '#df3337', fontSize: '0.85rem', marginRight: '0.25rem' }}>[{t.code}]</strong> 
+        <span>{t.name}</span>
+      </div>
+      <span style={{ color: '#64748b', fontSize: '0.9rem', fontWeight: '600' }}>+${t.price.toFixed(2)}</span>
+    </label>
+  );
+})}
               </div>
             </div>
 
