@@ -42,7 +42,18 @@ export default function SiteNavbar() {
                 style={{ cursor: 'pointer' }}
                 onClick={() => window.location.href = 'http://localhost:5173/'}
               >
-                john<span className="text-accent">.</span>willenborg
+                john
+                {/* 📍 TRUE ALIGNMENT FIX: Adds geometric padding to push the trailing text block cleanly to the right */}
+                <span 
+                  className="text-accent"
+                  style={{ 
+                    padding: '0 0.08em',
+                    display: 'inline-block'
+                  }}
+                >
+                  .
+                </span>
+                willenborg
               </div>
             </div>
             <div className="d-none d-md-flex col-md-6 p-0 justify-content-center align-items-center">
@@ -69,7 +80,6 @@ export default function SiteNavbar() {
               <button 
                 onClick={() => handleNavClick('contact')} 
                 className="btn btn-accent-action btn-sm d-none d-md-block button-elevated-shadow" 
-                /* 📍 RESTORED: Returned to your exact original inline specifications */
                 style={{ fontSize: '0.85rem', padding: '0.45rem 1.25rem' }}
               >
                 Let&apos;s Connect
