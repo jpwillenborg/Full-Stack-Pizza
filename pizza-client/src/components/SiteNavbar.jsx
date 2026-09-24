@@ -43,12 +43,16 @@ export default function SiteNavbar() {
                 onClick={() => window.location.href = 'http://localhost:5173/'}
               >
                 john
-                {/* 📍 TRUE ALIGNMENT FIX: Adds geometric padding to push the trailing text block cleanly to the right */}
+                {/* 📍 TRUE ALIGNMENT FIX: Swapped to standard text presentation properties to eliminate layout box micro-shifts */}
                 <span 
                   className="text-accent"
                   style={{ 
-                    padding: '0 0.08em',
-                    display: 'inline-block'
+                    fontWeight: '900',
+                    fontSize: '1.45rem',
+                    lineHeight: '1',
+                    display: 'inline',
+                    padding: '0',
+                    margin: '0'
                   }}
                 >
                   .
@@ -79,8 +83,15 @@ export default function SiteNavbar() {
             <div className="col-6 col-md-3 p-0 text-end d-flex justify-content-end align-items-center">
               <button 
                 onClick={() => handleNavClick('contact')} 
-                className="btn btn-accent-action btn-sm d-none d-md-block button-elevated-shadow" 
-                style={{ fontSize: '0.85rem', padding: '0.45rem 1.25rem' }}
+                className="btn btn-accent-action d-none d-md-block button-elevated-shadow" 
+                style={{ 
+                  fontSize: '0.95rem', 
+                  fontWeight: '600',
+                  padding: '0.65rem 1.6rem', 
+                  lineHeight: '1',
+                  height: 'auto',
+                  display: 'inline-block'
+                }}
               >
                 Let&apos;s Connect
               </button>
