@@ -43,7 +43,6 @@ export default function SiteNavbar() {
                 onClick={() => window.location.href = 'http://localhost:5173/'}
               >
                 john
-                {/* 📍 TRUE ALIGNMENT FIX: Swapped to standard text presentation properties to eliminate layout box micro-shifts */}
                 <span 
                   className="text-accent"
                   style={{ 
@@ -83,15 +82,9 @@ export default function SiteNavbar() {
             <div className="col-6 col-md-3 p-0 text-end d-flex justify-content-end align-items-center">
               <button 
                 onClick={() => handleNavClick('contact')} 
-                className="btn btn-accent-action d-none d-md-block button-elevated-shadow" 
-                style={{ 
-                  fontSize: '0.95rem', 
-                  fontWeight: '600',
-                  padding: '0.65rem 1.6rem', 
-                  lineHeight: '1',
-                  height: 'auto',
-                  display: 'inline-block'
-                }}
+                className="btn btn-accent-action btn-sm d-none d-md-block button-elevated-shadow" 
+                /* 📍 CLEAN RESTORATION: Reverted back to your exact, stable working portfolio markup */
+                style={{ fontSize: '0.85rem', padding: '0.45rem 1.25rem' }}
               >
                 Let&apos;s Connect
               </button>
