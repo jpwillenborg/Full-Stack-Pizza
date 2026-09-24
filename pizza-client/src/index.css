@@ -22,7 +22,6 @@
   /* 📍 FIX: Applies the native Geist typeface family uniformly across layouts */
   font-family: 'Geist', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   letter-spacing: 0.015em !important;
-  -webkit-font-smoothing: antialiased;
 
   .nav-container-minimal {
     position: fixed;
@@ -32,21 +31,10 @@
     transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
   }
 
-  /* 📍 TRUE ALIGNMENT FIX: Strips Poppins weight overrides from link text and forces an exact match */
   .btn-link {
     border: none !important;
     outline: none !important;
     background: transparent;
-    font-family: 'Geist Mono', SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
-    font-weight: 400 !important; /* Forces the exact thin weight from your portfolio links */
-    line-height: 1.5 !important; /* Standard base line height matching your original configuration */
-  }
-
-  /* 📍 TRUE ALIGNMENT FIX: Synchronizes the exact typography size and spacing of your brand logo text */
-  .fs-3 {
-    font-size: 1.75rem !important;
-    font-weight: 700 !important;
-    line-height: 1.2 !important;
   }
 
   .navbar-scrolled-top {
@@ -71,13 +59,10 @@
     background-color: var(--portfolio-accent) !important; 
     color: var(--portfolio-bg) !important; 
     font-weight: 600; 
-    font-size: 0.85rem !important; /* Kept clean small-scale parameters matching standard buttons */
     border-radius: 6px; 
-    padding: 0.45rem 1.25rem !important; /* Locks vertical growth to the exact portfolio size rules */
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); 
     border: none !important;
     outline: none !important;
-    line-height: 1.5 !important;
   }
 
   .btn-accent-action:hover { 
@@ -95,8 +80,9 @@
     transition: box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   }
   
+  /* 📍 FIX: Explicitly forces the dark background fill color directly on the scoped footer zone */
   footer {
-    background-color: transparent;
+    background-color: var(--portfolio-bg) !important;
   }
 }
 

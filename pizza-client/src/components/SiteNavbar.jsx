@@ -42,21 +42,7 @@ export default function SiteNavbar() {
                 style={{ cursor: 'pointer' }}
                 onClick={() => window.location.href = 'http://localhost:5173/'}
               >
-                john
-                {/* 📍 FIX: Added heavy geometric scaling to match the original dot's structural look */}
-                <span 
-                  className="text-accent" 
-                  style={{ 
-                    fontWeight: '800', 
-                    fontSize: '1.25em', 
-                    display: 'inline-block', 
-                    transform: 'translateY(-1px)',
-                    padding: '0 0.02em'
-                  }}
-                >
-                  .
-                </span>
-                willenborg
+                john<span className="text-accent">.</span>willenborg
               </div>
             </div>
             <div className="d-none d-md-flex col-md-6 p-0 justify-content-center align-items-center">
@@ -83,6 +69,7 @@ export default function SiteNavbar() {
               <button 
                 onClick={() => handleNavClick('contact')} 
                 className="btn btn-accent-action btn-sm d-none d-md-block button-elevated-shadow" 
+                /* 📍 RESTORED: Returned to your exact original inline specifications */
                 style={{ fontSize: '0.85rem', padding: '0.45rem 1.25rem' }}
               >
                 Let&apos;s Connect
