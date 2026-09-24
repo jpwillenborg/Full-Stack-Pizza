@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 export default function SiteNavbar() {
-  // const navigate = useNavigate();
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [hasScrolledDown, setHasScrolledDown] = useState(false);
-
-  const isHomePage = location.pathname === '/';
 
   useEffect(() => {
     const handleWindowScroll = () => {
@@ -35,7 +32,7 @@ export default function SiteNavbar() {
   };
 
   return (
-    <>
+    <div className="portfolio-component-scope">
       <nav className={`nav-container-minimal py-3 z-3 ${hasScrolledDown ? 'navbar-scrolled-active' : 'navbar-scrolled-top'}`}>
         <div className="container max-w-5xl mx-auto px-3">
           <div className="nav align-items-center m-0 w-100">
@@ -45,7 +42,21 @@ export default function SiteNavbar() {
                 style={{ cursor: 'pointer' }}
                 onClick={() => window.location.href = 'http://localhost:5173/'}
               >
-                john<span className="text-accent">.</span>willenborg
+                john
+                {/* 📍 FIX: Added heavy geometric scaling to match the original dot's structural look */}
+                <span 
+                  className="text-accent" 
+                  style={{ 
+                    fontWeight: '800', 
+                    fontSize: '1.25em', 
+                    display: 'inline-block', 
+                    transform: 'translateY(-1px)',
+                    padding: '0 0.02em'
+                  }}
+                >
+                  .
+                </span>
+                willenborg
               </div>
             </div>
             <div className="d-none d-md-flex col-md-6 p-0 justify-content-center align-items-center">
@@ -108,6 +119,6 @@ export default function SiteNavbar() {
           ))}
         </div>
       )}
-    </>
+    </div>
   );
 }
