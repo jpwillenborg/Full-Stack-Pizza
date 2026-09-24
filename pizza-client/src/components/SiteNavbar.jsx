@@ -83,8 +83,8 @@ export default function SiteNavbar() {
               <button 
                 onClick={() => handleNavClick('contact')} 
                 className="btn btn-accent-action btn-sm d-none d-md-block button-elevated-shadow" 
-                /* 📍 CLEAN RESTORATION: Reverted back to your exact, stable working portfolio markup */
-                style={{ fontSize: '0.85rem', padding: '0.45rem 1.25rem' }}
+                /* 📍 CONFIRMED: Pixel-perfect padding adjustments matching your root canvas factor scale */
+                style={{ fontSize: '0.95rem', padding: '0.45rem 1.25rem' }}
               >
                 Let&apos;s Connect
               </button>
