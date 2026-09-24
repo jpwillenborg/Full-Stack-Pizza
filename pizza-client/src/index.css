@@ -1,6 +1,8 @@
 /* 📍 GOOGLE FONTS IMPORT: Pulls Poppins geometric typography profiles */
 /* @import url('https://googleapis.com'); */
 
+@import "bootstrap/dist/css/bootstrap.min.css";
+
 /* 📍 PLACE THIS AT THE VERY TOP OF YOUR SRC/INDEX.CSS FILE */
 html, body {
   margin: 0;
